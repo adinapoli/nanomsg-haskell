@@ -11,7 +11,6 @@ import Test.Tasty.QuickCheck (testProperty)
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as C
 import Control.Concurrent (threadDelay)
-import Control.Applicative ( (<$>) )
 import Data.Maybe (catMaybes)
 
 instance Arbitrary ByteString where
