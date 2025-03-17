@@ -75,14 +75,15 @@ module Nanomsg
         , setTcpNoDelay
     ) where
 
-#include "nanomsg/nn.h"
-#include "nanomsg/pair.h"
-#include "nanomsg/reqrep.h"
-#include "nanomsg/pubsub.h"
-#include "nanomsg/survey.h"
-#include "nanomsg/pipeline.h"
-#include "nanomsg/bus.h"
-#include "nanomsg/tcp.h"
+#include "nng/nng.h"
+#include "nng/compat/nanomsg/nn.h"
+#include "nng/compat/nanomsg/pair.h"
+#include "nng/compat/nanomsg/reqrep.h"
+#include "nng/compat/nanomsg/pubsub.h"
+#include "nng/compat/nanomsg/survey.h"
+#include "nng/compat/nanomsg/pipeline.h"
+#include "nng/compat/nanomsg/bus.h"
+#include "nng/compat/nanomsg/tcp.h"
 
 import Data.ByteString (ByteString)
 -- import qualified Data.ByteString.Lazy as L
