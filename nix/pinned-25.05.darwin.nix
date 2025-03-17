@@ -1,0 +1,1 @@
+import (builtins.fetchTarball "https://github.com/NixOS/nixpkgs/archive/32fb99ba93fea2798be0e997ea331dd78167f814.tar.gz")
