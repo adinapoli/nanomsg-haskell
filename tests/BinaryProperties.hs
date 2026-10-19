@@ -12,6 +12,21 @@ import qualified Data.ByteString.Char8 as C
 import Control.Concurrent (threadDelay)
 import Data.Maybe (catMaybes)
 
+-- | Wait (bounded) until @n@ messages have arrived from any of the given
+-- sockets.  nng delivers messages asynchronously, so a fixed delay followed
+-- by a fixed number of non-blocking receives is racy: the messages may still
+-- be in flight, and those left behind then leak into the next iteration.
+recvN :: Int -> [Socket Pull] -> IO [String]
+recvN n socks = go n [] 2000000
+  where
+    go k acc t
+        | k <= 0 || t <= 0 = return (reverse acc)
+        | otherwise = do
+            msgs <- catMaybes <$> mapM recv' socks
+            case msgs of
+                [] -> threadDelay 1000 >> go k acc (t - 1000)
+                _  -> go (k - length msgs) (reverse msgs ++ acc) (t - 1000)
+
 instance Arbitrary ByteString where
     arbitrary = C.pack <$> arbitrary
 
@@ -105,14 +120,7 @@ prop_Pipeline = monadicIO $ do
                 send push msg
                 send push msg
                 send push msg
-                threadDelay 1000
-                a <- recv' pull1
-                b <- recv' pull1
-                c <- recv' pull1
-                d <- recv' pull2
-                e <- recv' pull2
-                f <- recv' pull2
-                let xs = catMaybes [a, b, c, d, e, f]
+                xs <- recvN 3 [pull1, pull2]
                 return $ all (== msg) xs && (length xs == 3)
 
 -- test Req and Rep sockets
